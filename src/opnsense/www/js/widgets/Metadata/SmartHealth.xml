@@ -1,0 +1,36 @@
+<metadata>
+    <smarthealth>
+        <filename>SmartHealth.js</filename>
+        <link>/ui/smart</link>
+        <endpoints>
+            <endpoint>/api/smart/service/list</endpoint>
+            <endpoint>/api/smart/service/info</endpoint>
+        </endpoints>
+        <translations>
+            <title>SMART Disk Health</title>
+            <unit>Temperature unit</unit>
+            <celsius>Celsius (°C)</celsius>
+            <fahrenheit>Fahrenheit (°F)</fahrenheit>
+            <disks>Disks to show</disks>
+            <fields>Health information to show</fields>
+            <f_health>Overall health</f_health>
+            <f_temperature>Temperature</f_temperature>
+            <f_wear>Wear / life used</f_wear>
+            <f_written>Total data written</f_written>
+            <f_badblocks>Bad blocks</f_badblocks>
+            <f_errors>Error counters</f_errors>
+            <f_poweron>Power-on time</f_poweron>
+            <f_identity>Model details (serial, firmware, capacity)</f_identity>
+            <status_ok>Healthy</status_ok>
+            <status_warning>Warning</status_warning>
+            <status_critical>Critical</status_critical>
+            <status_unknown>Unknown</status_unknown>
+            <serial>Serial</serial>
+            <firmware>Firmware</firmware>
+            <capacity>Capacity</capacity>
+            <no_disks>No disks found or selected.</no_disks>
+            <no_plugin>SMART API not found. Install the os-smart plugin (System > Firmware > Plugins).</no_plugin>
+            <unavailable>Unable to retrieve SMART data.</unavailable>
+        </translations>
+    </smarthealth>
+</metadata>

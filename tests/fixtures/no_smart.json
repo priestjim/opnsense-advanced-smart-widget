@@ -1,0 +1,1 @@
+{"smartctl":{"messages":[{"string":"Smartctl: SMART support is: Unavailable - device lacks SMART capability.","severity":"warning"}],"exit_status":4},"device":{"name":"/dev/da0","type":"scsi","protocol":"SCSI"},"model_name":"QEMU HARDDISK","smart_support":{"available":false}}
