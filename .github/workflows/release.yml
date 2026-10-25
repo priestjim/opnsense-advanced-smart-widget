@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Run tests
+        run: npm test
+      - name: Package widget
+        run: |
+          tar -czf "opnsense-smart-health-widget-${GITHUB_REF_NAME}.tar.gz" \
+            src/opnsense/www install.sh README.md
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "opnsense-smart-health-widget-${GITHUB_REF_NAME}.tar.gz" \
+            --title "$GITHUB_REF_NAME" --generate-notes

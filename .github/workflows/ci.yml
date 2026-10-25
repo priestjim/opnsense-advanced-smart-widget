@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Unit tests
+        run: npm test
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Widget metadata is well-formed XML
+        run: xmllint --noout src/opnsense/www/js/widgets/Metadata/SmartHealth.xml
+      - name: Fixtures are valid JSON
+        run: for f in tests/fixtures/*.json; do python3 -m json.tool "$f" > /dev/null || exit 1; done
+      - name: Install script has valid shell syntax
+        run: sh -n install.sh
+      - name: Widget file parses as an ES module
+        run: node --check --input-type=module < src/opnsense/www/js/widgets/SmartHealth.js

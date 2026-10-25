@@ -208,7 +208,9 @@ export function normalizeSmart(device, info) {
 
     /* error counters */
     rec.crc_errors = attrCount(byId(199));
-    rec.error_log_entries = num(info.ata_smart_error_log?.summary?.count) ?? num(nvme?.num_err_log_entries);
+    /* smartctl nests the ATA error log under "summary" or (7.4+, GP logging) "extended" */
+    rec.error_log_entries = num(info.ata_smart_error_log?.summary?.count)
+        ?? num(info.ata_smart_error_log?.extended?.count) ?? num(nvme?.num_err_log_entries);
     rec.unsafe_shutdowns = num(nvme?.unsafe_shutdowns);
 
     /* verdict */
@@ -258,7 +260,8 @@ export function normalizeSmart(device, info) {
     if (rec.crc_errors > 0) {
         raise(1, `${rec.crc_errors} interface CRC errors (check cable)`);
     }
-    if (info.ata_smart_self_test_log?.standard?.table?.[0]?.status?.passed === false) {
+    const selfTests = info.ata_smart_self_test_log?.standard ?? info.ata_smart_self_test_log?.extended;
+    if (selfTests?.table?.[0]?.status?.passed === false) {
         raise(1, 'Last self-test failed');
     }
 

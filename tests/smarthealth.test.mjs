@@ -70,6 +70,36 @@ test('real NVMe capture (TEAM TM8FPW001T, smartctl 7.5)', () => {
     assert.equal(formatBytes(r.capacity_bytes), '1.0 TB');
 });
 
+test('real SATA HDD capture (Seagate ST16000NT001, smartctl 7.4)', () => {
+    const r = normalizeSmart('sda', fx('ata_hdd_seagate_st16000nt001'));
+    assert.equal(r.status, 'ok');
+    assert.deepEqual(r.issues, []);
+    assert.equal(r.media, 'hdd');
+    assert.equal(r.temperature_c, 31);
+    assert.equal(r.bytes_written, 10570366328 * 512); /* device statistics, not the +32 drifted attribute */
+    assert.equal(formatBytes(r.bytes_written), '5.4 TB');
+    assert.equal(r.power_on_hours, 14315);
+    assert.equal(r.power_cycles, 72);
+    assert.equal(r.bad_blocks, 0);
+    assert.equal(r.crc_errors, 0);
+    assert.equal(r.percent_used, null); /* spinning disks report no wear */
+    assert.equal(r.error_log_entries, 0); /* smartctl 7.4 nests this under .extended */
+});
+
+test('failed last self-test is detected in the smartctl 7.4 "extended" log layout', () => {
+    const info = fx('ata_hdd_seagate_st16000nt001');
+    info.ata_smart_self_test_log.extended.table[0].status.passed = false;
+    const r = normalizeSmart('sda', info);
+    assert.equal(r.status, 'warning');
+    assert.ok(r.issues.some((i) => /self-test/.test(i)));
+});
+
+test('ATA error log entries are read from the extended layout', () => {
+    const info = fx('ata_hdd_seagate_st16000nt001');
+    info.ata_smart_error_log.extended.count = 4;
+    assert.equal(normalizeSmart('sda', info).error_log_entries, 4);
+});
+
 test('NVMe uses the drive-reported temperature limits (warning 90 / critical 95)', () => {
     const info = fx('nvme_team_tm8fpw001t');
     info.temperature.current = 78;

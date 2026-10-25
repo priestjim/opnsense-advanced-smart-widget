@@ -61,7 +61,7 @@ Remove the two files listed above from the firewall, then reload the dashboard.
 npm test    # node --test, no dependencies
 ```
 
-Tests cover the smartctl-JSON normalisation, status rules, unit conversion, rendering and the widget's option handling (with stubbed dashboard globals). Fixtures in `tests/fixtures/` are hand-built from smartctl's JSON schema, plus two real captures (`permission_denied.json` and `nvme_team_tm8fpw001t.json`, a TEAM TM8FPW001T NVMe). Pull requests with real `smartctl -x --json=c` captures from other drives are welcome as new fixtures.
+Tests cover the smartctl-JSON normalisation, status rules, unit conversion, rendering and the widget's option handling (with stubbed dashboard globals). Fixtures in `tests/fixtures/` are hand-built from smartctl's JSON schema, plus three real, anonymized captures (`permission_denied.json`, `nvme_team_tm8fpw001t.json` – a TEAM TM8FPW001T NVMe, and `ata_hdd_seagate_st16000nt001.json` – a Seagate SATA HDD, trimmed of irrelevant log directories). Pull requests with real `smartctl -x --json=c` captures from other drives are welcome as new fixtures.
 
 ## Notes
 
